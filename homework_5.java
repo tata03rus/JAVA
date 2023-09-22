@@ -7,7 +7,7 @@ public class homework_5 {
     public static void main(String[] args) {
         Map<String, Set<String>> homework_5 = new HashMap<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("JAVA/contacts.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("contacts.csv"))) {
             String line;
             line = reader.readLine();
             while ((line = reader.readLine()) != null) {
@@ -26,7 +26,7 @@ public class homework_5 {
         List<Map.Entry<String, Set<String>>> sortedContacts = new ArrayList<>(homework_5.entrySet());
         sortedContacts.sort((c1, c2) -> Integer.compare(c2.getValue().size(), c1.getValue().size()));
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("JAVA/new_contacts.csv"))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("new_contacts.csv"))) {
             for (Map.Entry<String, Set<String>> contact : sortedContacts) {
                 writer.write(contact.getKey() + "," + String.join(",", contact.getValue()) + "\n");
             }
