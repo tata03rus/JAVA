@@ -1,54 +1,42 @@
+package JAVA;
+
+import java.io.*;
 import java.util.*;
 
-public class Homework_5 {
+public class homework_5 {
     public static void main(String[] args) {
-        Map<LinkedList<User>, LinkedList<Number>> phone_book = new HashMap<LinkedList<User>, LinkedList<Number>>();
-        LinkedList<User> us = new LinkedList<User>();
-        us.add(AddUsers());
-        LinkedList<Number> num = new LinkedList<Number>();
-        num.add(AddNumbers());
-        phone_book.put(us, num);
-        for (Map.Entry<LinkedList<User>, LinkedList<Number>> item : phone_book.entrySet()) {
-            for (User userFor : item.getKey()) {
-                for (Number numberFor : item.getValue()) {
-                    System.out.printf("User: %s, Number: %s ", userFor.Name, numberFor.Number);
-                }
+        Map<String, Set<String>> homework_5 = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("JAVA/contacts.csv"))) {
+            String line;
+            line = reader.readLine();
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                String name = parts[0].trim();
+                String phone = parts[1].trim();
+
+                Set<String> phones = homework_5.getOrDefault(name, new HashSet<>());
+                phones.add(phone);
+                homework_5.put(name, phones);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
 
-    public static User AddUsers() {
-        var x = new Homework_5();
-        Scanner name = new Scanner(System.in);
-        System.out.print("Input user name: ");
-        String nameUser = name.nextLine();
-        User temp = x.new User(nameUser);
-        return temp;
-    }
+        List<Map.Entry<String, Set<String>>> sortedContacts = new ArrayList<>(homework_5.entrySet());
+        sortedContacts.sort((c1, c2) -> Integer.compare(c2.getValue().size(), c1.getValue().size()));
 
-    public static Number AddNumbers() {
-        var c = new Homework_5();
-        Scanner num = new Scanner(System.in);
-        System.out.print("Input user number: ");
-        String userNum = num.nextLine();
-        Number temp = c.new Number(userNum);
-        num.close();
-        return temp;
-    }
-
-    class Number {
-        String Number;
-
-        Number(String number) {
-            Number = number;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("JAVA/new_contacts.csv"))) {
+            for (Map.Entry<String, Set<String>> contact : sortedContacts) {
+                writer.write(contact.getKey() + "," + String.join(",", contact.getValue()) + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
 
-    class User {
-        String Name;
-
-        User(String name) {
-            Name = name;
+        System.out.println("Контакты после сортировки:");
+        for (Map.Entry<String, Set<String>> contact : sortedContacts) {
+            System.out.println(contact.getKey() + ": " + contact.getValue());
         }
     }
 }
